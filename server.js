@@ -32,36 +32,69 @@ function makeLog(collection, open, close) {
   ].join('');
 }
 
+function makeNotifyCommand(title, subtitle, message) {
+  var command = './bin/terminal-notifier.app/Contents/MacOS/terminal-notifier -title "{TITLE}" -subtitle "{{SUBTITLE}}" -message "{{MESSAGE}}"';
+  
+  title = title.replace(/[^a-z0-9.-_,' ]/gi, '');
+  subtitle = subtitle.replace(/[^a-z0-9.-_,' ]/gi, '');
+  message = message.replace(/[^a-z0-9.-_,' ]/gi, '');
+  
+  command = command.replace(/\{\{TITLE\}\}/g, title)
+                   .replace(/\{\{SUBTITLE\}\}/g, subtitle)
+                   .replace(/\{\{MESSAGE\}\}/g, message);
+  
+  return command;
+}
+
+function makeSayCommand(volume, lastVolume, voice, message) {
+  volume = volume.replace(/[^0-9]/gi, '');
+  lastVolume = lastVolume.replace(/[^0-9]/gi, '');
+  voice = voice.replace(/[^a-z0-9.-_,' ]/gi, '');
+  message = message.replace(/[^a-z0-9.-_,' ]/gi, '');
+
+  var command = [makeVolumeCommand(volume),
+                 'say -v "{{VOICE}}" "{{MESSAGE}}"',
+                 makeVolumeCommand(lastVolume)].join(' && ');
+
+  command = command.replace(/\{\{VOICE\}\}/g, voice)
+                   .replace(/\{\{MESSAGE\}\}/g, message);
+                   
+  return command;
+}
+
+function makeVolumeCommand(volume) {
+  volume = volume.replace(/[^0-9]/gi, '');
+  var command = 'osascript -e \'set volume output volume {{VOLUME}}\'';
+  command = command.replace(/\{\{VOLUME\}\}/g, to);
+  return command;
+}
+
+function makeGetVolumeCommand() {
+  return 'osascript -e \'output volume of (get volume settings)\'';
+}
+
 function sayLoop() {
   if (queue.length > 0) {
     var next = queue.shift();
-    var voice = next.voice.replace(/[^a-z0-9.-_,' ]/g, '');
-    var message = next.message.replace(/[^a-z0-9.-_,' ]/g, '').replace(/\./g, '...');
     said.unshift(next)
     
     if (said.length > 20) {
       said = said.slice(0, 20);
     }
     
-    function setVolume(to) {
-      var command = 'osascript -e \'set volume output volume {{VOLUME}}\'';
-      command = command.replace(/\{\{VOLUME\}\}/g, to);
-      return command;
-    }
-    
-    var getVolume = 'osascript -e \'output volume of (get volume settings)\'';
-    var lastVolume = 0;
-
     // get the system volume
     exec(getVolume, function(error, stdout, stderr) {
-      lastVolume = stdout;
+      var lastVolume = stdout;
       
-      var command = [setVolume(100),
-                     'say -v "{{VOICE}}" "{{MESSAGE}}"',
-                     setVolume(lastVolume)].join(' && ');
-      command = command.replace(/\{\{VOICE\}\}/g, voice).replace(/\{\{MESSAGE\}\}/g, message);
-      
-      // crank it up, say it, go quiet
+      if (parseInt(lastVolume) <= 0 || parseInt(volume) <= 0) {
+        // use notification center
+        command = makeNotifyCommand('HEY', 'New message from ' + next.voice, next.message);
+      }
+      else {
+        command = makeSayCommand(volume, lastVolume, next.voice, next.message);
+      }
+
+      // perform the message
       exec(command, function(error, stdout, stderr) {
         // and do it again!
         setImmediate(sayLoop);
@@ -83,56 +116,79 @@ app.get('/', function(req, res){
     <html>
     <head>
       <title>Gooogle</title>
+      <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+      <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+      <![endif]-->
     </head>
     <body>
-      <div style="width: 500px">
-      <form method="POST" action="/send">
-        <select name="voice" style="width: 100px">
-          <option value="Agnes">Agnes</option>
-          <option value="Kathy">Kathy</option>
-          <option value="Princess">Princess</option>
-          <option value="Vicki">Vicki</option>
-          <option value="Victoria">Victoria </option>
-          <option value="Alex">Alex</option>
-          <option value="Bruce">Bruce</option>
-          <option value="Fred">Fred</option>
-          <option value="Junior">Junior</option>
-          <option value="Ralph">Ralph</option>
-          <option value="Albert">Albert</option>
-          <option value="Bad News">Bad News</option>
-          <option value="Bahh">Bahh</option>
-          <option value="Bells">Bells</option>
-          <option value="Boing">Boing</option>
-          <option value="Bubbles">Bubbles</option>
-          <option value="Cellos">Cellos</option>
-          <option value="Deranged">Deranged </option>
-          <option value="Good News">Good News</option>
-          <option value="Hysterical">Hysterical </option>
-          <option value="Pipe Organ">Pipe Organ </option>
-          <option value="Trinoids">Trinoids </option>
-          <option value="Whisper">Whisper </option>
-          <option value="Zarvox">Zarvox</option>
-        </select>
-        <input type="text" id="message" name="message" placeholder="Say what?" style="width:300px"/>
-        <input type="submit" name="submit" value="Say" style="width: 50px"/>
-      </form>
-      <h2>Gonna Say</h2>
-      <ol>
-        {{PENDING}}
-      </ol>
-      <h2>Said</h2>
-      <ol>
-        {{LOG}}
-      </ol>
-      <hr/>
-      <p style="font-size: 10px; color: grey">{{VERSION}} (<a href="/update">update</a>)</p>
+      <div class="container">
+        <form method="POST" action="/send" class="row form-horizontal">
+          <div class="col-md-3">
+            <select name="voice" class="form-control">
+              <option value="Agnes">Agnes</option>
+              <option value="Kathy">Kathy</option>
+              <option value="Princess">Princess</option>
+              <option value="Vicki">Vicki</option>
+              <option value="Victoria">Victoria </option>
+              <option value="Alex">Alex</option>
+              <option value="Bruce">Bruce</option>
+              <option value="Fred">Fred</option>
+              <option value="Junior">Junior</option>
+              <option value="Ralph">Ralph</option>
+              <option value="Albert">Albert</option>
+              <option value="Bad News">Bad News</option>
+              <option value="Bahh">Bahh</option>
+              <option value="Bells">Bells</option>
+              <option value="Boing">Boing</option>
+              <option value="Bubbles">Bubbles</option>
+              <option value="Cellos">Cellos</option>
+              <option value="Deranged">Deranged </option>
+              <option value="Good News">Good News</option>
+              <option value="Hysterical">Hysterical </option>
+              <option value="Pipe Organ">Pipe Organ </option>
+              <option value="Trinoids">Trinoids </option>
+              <option value="Whisper">Whisper </option>
+              <option value="Zarvox">Zarvox</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <select name="volume" class="form-control">
+              <option value="100">100</option>
+              <option value="75">75</option>
+              <option value="50">50</option>
+              <option value="25">25</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <input type="text" id="message" name="message" placeholder="Say what?" class="form-control"/>
+          </div>
+          <div class="col-md-1">
+            <input type="submit" name="submit" value="Say" class="form-control"/>
+          </div>
+        </form>
+        <section  class="row">
+          <h2>Gonna Say</h2>
+          <ol>
+            {{PENDING}}
+          </ol>
+          <h2>Said</h2>
+          <ol>
+            {{LOG}}
+          </ol>
+        </section>
+        <hr/>
+        <p style="font-size: 10px; color: grey">{{VERSION}} (<a href="/update">update</a>)</p>
+      </div>
       <script>
         var voice = '{{VOICE}}' || 'Alex';
+        var volume = '{{VOLUME}}' || '0';
         var els;
         if (voice) {
           els = document.getElementsByTagName('option');
           for (var i = 0, len = els.length; i < len; i++) {
-            if (els[i].value == voice) {
+            if (els[i].value == voice || els[i].value == volume) {
               els[i].selected = 'SELECTED';
             }
           }
@@ -145,6 +201,7 @@ app.get('/', function(req, res){
   body = body.replace(/\{\{PENDING\}\}/g, makeLog(queue, '<li>', '</li>'));
   body = body.replace(/\{\{LOG\}\}/g, makeLog(said, '<li>', '</li>'));
   body = body.replace(/\{\{VOICE\}\}/g, sanitizer.sanitize(req.query.voice));
+  body = body.replace(/\{\{VOLUME\}\}/g, sanitizer.sanitize(req.query.volume));
   body = body.replace(/\{\{VERSION\}\}/g, sanitizer.sanitize(pjson.version));
   res.setHeader('Content-Type', 'text/html');
   res.setHeader('Content-Length', Buffer.byteLength(body));
@@ -165,7 +222,7 @@ app.get('/update', function(req, res) {
       <html>
       <body>
         <h1>Updating...</h1>
-        <p>Wait a few minutes, then <a href="/">return to the main screen</a></p>
+        <p>Wait a few minutes for the server to exit and restart, then <a href="/">return to the main screen</a></p>
       </body>
       </html>
     */});
@@ -183,17 +240,18 @@ app.post('/send', function(req, res) {
   }
   
   if (!req.body.voice || !req.body.message) {
-    res.redirect('/?voice=' + req.body.voice);
+    res.redirect('/?voice=' + req.body.voice + '&volume=' + req.body.volume);
     return;
   }
 
   queue.push({
     voice: req.body.voice,
-    message: req.body.message
+    message: req.body.message,
+    volume: req.body.volume
   });
   
   // back to main
-  res.redirect('/?voice=' + req.body.voice);
+  res.redirect('/?voice=' + req.body.voice + '&volume=' + req.body.volume);
 });
 
 app.listen(4242);
