@@ -9,6 +9,7 @@ var pjson = require('./package.json');
 app.use(express.json());
 app.use(express.urlencoded());
 app.use("/stylesheets", express.static(__dirname + '/stylesheets'));
+app.use("/images", express.static(__dirname + '/images'));
 
 function hereDoc(f) {
   return f.toString().
@@ -118,6 +119,11 @@ app.get('/', function(req, res){
     <head>
       <title>Gooogle</title>
       <link href="/stylesheets/bootstrap.css" rel="stylesheet">
+      <style>
+        body {
+          background: url(images/ganzbot30.png) left top no-repeat;
+        }
+      </style>
     </head>
     <body>
       <div class="container">
