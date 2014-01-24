@@ -43,13 +43,8 @@ fi
 
 # create a temporary directory and load the code
 # update if already installed
-if [ ! -f "$NODEZDIR/node_modules/osxsay/package.json" ]; then
-  cd $NODEZDIR
-  $npm install https://github.com/Jakobo/osxsay/tarball/master > /dev/null 2>&1
-else
-  cd $NODEZDIR
-  $npm update
-fi
+cd $NODEZDIR
+$npm install https://github.com/Jakobo/osxsay/tarball/master > /dev/null 2>&1
 
 # run
 cd $NODEZDIR/node_modules/osxsay

@@ -1,11 +1,10 @@
 var forever = require('forever-monitor');
-
 var child = new (forever.Monitor)('server.js', {
   silent: true,
   max: 100,
   killTree: true,
   watch: true,
-  // disabled: bug on file watchIgnoreDotFiles: ['.foreverignore'], // only watch for the package.json for changes
+  watchIgnoreDotFiles: ['.foreverignore'], // only watch for the package.json for changes
   options: []
 });
 

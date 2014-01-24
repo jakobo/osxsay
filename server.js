@@ -157,6 +157,7 @@ app.get('/update', function(req, res) {
   var command = 'cd ' + basedir + ' && ' + thisNpm + ' update';
   
   exec(command, function(error, stdout, stderr) {
+    // just exit. everyone but start.js will get updated
     process.exit(0);
   });
 });
