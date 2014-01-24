@@ -130,28 +130,28 @@ app.get('/', function(req, res){
         <form method="POST" action="/send" class="row form-horizontal">
           <div class="col-md-3">
             <select name="voice" class="form-control">
+              <option value="Alex">Ganzbot</option>
               <option value="Agnes">Agnes</option>
-              <option value="Kathy">Kathy</option>
-              <option value="Princess">Princess</option>
-              <option value="Vicki">Vicki</option>
-              <option value="Victoria">Victoria </option>
-              <option value="Alex">Alex</option>
-              <option value="Bruce">Bruce</option>
-              <option value="Fred">Fred</option>
-              <option value="Junior">Junior</option>
-              <option value="Ralph">Ralph</option>
               <option value="Albert">Albert</option>
               <option value="Bad News">Bad News</option>
               <option value="Bahh">Bahh</option>
               <option value="Bells">Bells</option>
               <option value="Boing">Boing</option>
+              <option value="Bruce">Bruce</option>
               <option value="Bubbles">Bubbles</option>
               <option value="Cellos">Cellos</option>
               <option value="Deranged">Deranged </option>
+              <option value="Fred">Fred</option>
               <option value="Good News">Good News</option>
               <option value="Hysterical">Hysterical </option>
+              <option value="Junior">Junior</option>
+              <option value="Kathy">Kathy</option>
               <option value="Pipe Organ">Pipe Organ </option>
+              <option value="Princess">Princess</option>
+              <option value="Ralph">Ralph</option>
               <option value="Trinoids">Trinoids </option>
+              <option value="Vicki">Vicki</option>
+              <option value="Victoria">Victoria </option>
               <option value="Whisper">Whisper </option>
               <option value="Zarvox">Zarvox</option>
             </select>
