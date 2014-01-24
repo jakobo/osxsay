@@ -1,16 +1,13 @@
 {
   "private": true,
-  "name": "saymore",
+  "name": "osxsay",
   "version": "0.0.0",
-  "description": "better than say, say more",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
+  "description": "just screwing around with a simple osx say server",
+  "author": "Jakob Heuser",
   "license": "mit",
   "dependencies": {
     "express": "~3.4.8",
-    "sanitizer": "~0.1.1"
+    "sanitizer": "~0.1.1",
+    "forever-monitor": "~1.2.3"
   }
 }
