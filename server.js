@@ -40,13 +40,31 @@ function sayLoop() {
       said = said.slice(0, 20);
     }
     
-    command = 'say -v "{{VOICE}}" "{{MESSAGE}}"';
-    command = command.replace(/\{\{VOICE\}\}/g, voice).replace(/\{\{MESSAGE\}\}/g, message);
+    function setVolume(to) {
+      var command = 'osascript -e \'set volume output volume {{VOLUME}}\'';
+      command = command.replace(/\{\{VOLUME\}\}/g, to);
+      return command;
+    }
+    
+    var getVolume = 'osascript -e \'output volume of (get volume settings)\'';
+    var lastVolume = 0;
 
-    exec(command, function(error, stdout, stderr) {
-      // and again
-      setImmediate(sayLoop);
-    });
+    // get the system volume
+    exec(getVolume, function(error, stdout, stderr) {
+      lastVolume = stdout;
+      
+      var command = [setVolume(100),
+                     'say -v "{{VOICE}}" "{{MESSAGE}}"',
+                     setVolume(lastVolume)].join(' && ');
+      command = command.replace(/\{\{VOICE\}\}/g, voice).replace(/\{\{MESSAGE\}\}/g, message);
+      
+      // crank it up, say it, go quiet
+      exec(command, function(error, stdout, stderr) {
+        // and do it again!
+        setImmediate(sayLoop);
+      });      
+    })
+
   }
   else {
     // and again
