@@ -181,7 +181,7 @@ app.get('/', function(req, res){
       </div>
       <script>
         var voice = '{{VOICE}}' || 'Alex';
-        var volume = '{{VOLUME}}' || '100';
+        var volume = '{{VOLUME}}' || '50';
         var els;
         if (voice) {
           els = document.getElementsByTagName('option');
