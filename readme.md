@@ -10,6 +10,8 @@ This is a simple prank to pull on someone running OSX if they leave their comput
     * Says the line of text you give it
     * Returns back to the previous volume
 
+![Screenshot of utility](https://raw.github.com/Jakobo/osxsay/master/readme/screenshot.png)
+
 ## About Security
 A prank that totally takes over the computer wouldn't be cool. Here's how it stays somewhat harmless:
 
