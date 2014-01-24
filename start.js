@@ -5,7 +5,7 @@ var child = new (forever.Monitor)('server.js', {
   max: 100,
   killTree: true,
   watch: true,
-  watchIgnorePatterns: ['*.sh', '*.md', '*.js'], // only watch for the package.json for changes
+  watchIgnoreDotFiles: ['.foreverignore'], // only watch for the package.json for changes
   options: []
 });
 
