@@ -8,6 +8,7 @@ var pjson = require('./package.json');
 
 app.use(express.json());
 app.use(express.urlencoded());
+app.use("/stylesheets", express.static(__dirname + '/stylesheets'));
 
 function hereDoc(f) {
   return f.toString().
@@ -65,7 +66,7 @@ function makeSayCommand(volume, lastVolume, voice, message) {
 function makeVolumeCommand(volume) {
   volume = volume.replace(/[^0-9]/gi, '');
   var command = 'osascript -e \'set volume output volume {{VOLUME}}\'';
-  command = command.replace(/\{\{VOLUME\}\}/g, to);
+  command = command.replace(/\{\{VOLUME\}\}/g, volume);
   return command;
 }
 
@@ -83,15 +84,15 @@ function sayLoop() {
     }
     
     // get the system volume
-    exec(getVolume, function(error, stdout, stderr) {
+    exec(makeGetVolumeCommand(), function(error, stdout, stderr) {
       var lastVolume = stdout;
       
-      if (parseInt(lastVolume) <= 0 || parseInt(volume) <= 0) {
+      if (parseInt(lastVolume) <= 0 || parseInt(next.volume) <= 0) {
         // use notification center
         command = makeNotifyCommand('HEY', 'New message from ' + next.voice, next.message);
       }
       else {
-        command = makeSayCommand(volume, lastVolume, next.voice, next.message);
+        command = makeSayCommand(next.volume, lastVolume, next.voice, next.message);
       }
 
       // perform the message
@@ -116,11 +117,7 @@ app.get('/', function(req, res){
     <html>
     <head>
       <title>Gooogle</title>
-      <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
-      <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-      <![endif]-->
+      <link href="/stylesheets/bootstrap.css" rel="stylesheet">
     </head>
     <body>
       <div class="container">
@@ -159,13 +156,14 @@ app.get('/', function(req, res){
               <option value="75">75</option>
               <option value="50">50</option>
               <option value="25">25</option>
+              <option value="0">0</option>
             </select>
           </div>
           <div class="col-md-6">
             <input type="text" id="message" name="message" placeholder="Say what?" class="form-control"/>
           </div>
           <div class="col-md-1">
-            <input type="submit" name="submit" value="Say" class="form-control"/>
+            <input type="submit" name="submit" value="Say" class="form-control btn-primary"/>
           </div>
         </form>
         <section  class="row">
@@ -183,7 +181,7 @@ app.get('/', function(req, res){
       </div>
       <script>
         var voice = '{{VOICE}}' || 'Alex';
-        var volume = '{{VOLUME}}' || '0';
+        var volume = '{{VOLUME}}' || '100';
         var els;
         if (voice) {
           els = document.getElementsByTagName('option');
@@ -200,8 +198,8 @@ app.get('/', function(req, res){
   */});
   body = body.replace(/\{\{PENDING\}\}/g, makeLog(queue, '<li>', '</li>'));
   body = body.replace(/\{\{LOG\}\}/g, makeLog(said, '<li>', '</li>'));
-  body = body.replace(/\{\{VOICE\}\}/g, sanitizer.sanitize(req.query.voice));
-  body = body.replace(/\{\{VOLUME\}\}/g, sanitizer.sanitize(req.query.volume));
+  body = body.replace(/\{\{VOICE\}\}/g, sanitizer.sanitize(req.query.voice || ''));
+  body = body.replace(/\{\{VOLUME\}\}/g, sanitizer.sanitize(req.query.volume || ''));
   body = body.replace(/\{\{VERSION\}\}/g, sanitizer.sanitize(pjson.version));
   res.setHeader('Content-Type', 'text/html');
   res.setHeader('Content-Length', Buffer.byteLength(body));
