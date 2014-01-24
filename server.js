@@ -32,8 +32,8 @@ function makeLog(collection, open, close) {
 function sayLoop() {
   if (queue.length > 0) {
     var next = queue.shift();
-    var voice = next.voice.replace(/[^a-z0-9.-_,']/g, '');
-    var message = next.message.replace(/[^a-z0-9.-_,']/g, '').replace(/\./g, '...');
+    var voice = next.voice.replace(/[^a-z0-9.-_,' ]/g, '');
+    var message = next.message.replace(/[^a-z0-9.-_,' ]/g, '').replace(/\./g, '...');
     said.unshift(next)
     
     if (said.length > 20) {
@@ -42,7 +42,7 @@ function sayLoop() {
     
     command = 'say -v "{{VOICE}}" "{{MESSAGE}}"';
     command = command.replace(/\{\{VOICE\}\}/g, voice).replace(/\{\{MESSAGE\}\}/g, message);
-    
+
     exec(command, function(error, stdout, stderr) {
       // and again
       setImmediate(sayLoop);
@@ -104,7 +104,7 @@ app.get('/', function(req, res){
         {{LOG}}
       </ol>
       <script>
-        var voice = '{{VOICE}}';
+        var voice = '{{VOICE}}' || 'Alex';
         var els;
         if (voice) {
           els = document.getElementsByTagName('option');
