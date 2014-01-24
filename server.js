@@ -4,6 +4,8 @@ var exec = require('child_process').exec;
 var sanitizer = require('sanitizer');
 var app = express();
 
+var pjson = require('./package.json');
+
 app.use(express.json());
 app.use(express.urlencoded());
 
@@ -143,6 +145,7 @@ app.get('/', function(req, res){
   body = body.replace(/\{\{PENDING\}\}/g, makeLog(queue, '<li>', '</li>'));
   body = body.replace(/\{\{LOG\}\}/g, makeLog(said, '<li>', '</li>'));
   body = body.replace(/\{\{VOICE\}\}/g, sanitizer.sanitize(req.query.voice));
+  body = body.replace(/\{\{VERSION\}\}/g, sanitizer.sanitize(pjson.version));
   res.setHeader('Content-Type', 'text/html');
   res.setHeader('Content-Length', Buffer.byteLength(body));
   res.end(body);
@@ -154,10 +157,21 @@ app.get('/update', function(req, res) {
   var basedir = path.resolve(__dirname, '..');
   var thisNode = process.execPath;
   var thisNpm = path.resolve(path.dirname(thisNode), 'npm');
-  var command = 'cd ' + basedir + ' && ' + thisNpm + ' update';
+  var command = 'cd ' + basedir + ' && ' + thisNpm + ' install https://github.com/Jakobo/osxsay/tarball/master';
   
   exec(command, function(error, stdout, stderr) {
-    // just exit. everyone but start.js will get updated
+    // just exit. forever (start.js) will restart us
+    var body = hereDoc(function() {/*!
+      <html>
+      <body>
+        <h1>Updating...</h1>
+        <p>Wait a few minutes, then <a href="/">return to the main screen</a></p>
+      </body>
+      </html>
+    */});
+    res.setHeader('Content-Type', 'text/html');
+    res.setHeader('Content-Length', Buffer.byteLength(body));
+    res.end(body);
     process.exit(0);
   });
 });
