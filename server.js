@@ -1,4 +1,5 @@
 var express = require('express');
+var path = require('path');
 var exec = require('child_process').exec;
 var sanitizer = require('sanitizer');
 var app = express();
@@ -121,6 +122,8 @@ app.get('/', function(req, res){
       <ol>
         {{LOG}}
       </ol>
+      <hr/>
+      <p style="font-size: 10px; color: grey">{{VERSION}} (<a href="/update">update</a>)</p>
       <script>
         var voice = '{{VOICE}}' || 'Alex';
         var els;
@@ -143,6 +146,19 @@ app.get('/', function(req, res){
   res.setHeader('Content-Type', 'text/html');
   res.setHeader('Content-Length', Buffer.byteLength(body));
   res.end(body);
+});
+
+app.get('/update', function(req, res) {
+  // from current directory, go up one level
+  // run npm update from the command line
+  var basedir = path.resolve(__dirname, '..');
+  var thisNode = process.execPath;
+  var thisNpm = path.resolve(path.dirname(thisNode), 'npm');
+  var command = 'cd ' + basedir + ' && ' + thisNpm + ' update';
+  
+  exec(command, function(error, stdout, stderr) {
+    process.exit(0);
+  });
 });
 
 app.post('/send', function(req, res) {

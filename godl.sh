@@ -6,6 +6,13 @@ NODEGZ="$NODEDIR.tar.gz"
 NODEBIN="http://nodejs.org/dist/$NODEREV/$NODEGZ"
 WHOAMI=$(whoami)
 ROOT="/Users/$WHOAMI"
+NODEZDIR="$ROOT/.noderz"
+
+node="$NODEZDIR/$NODEDIR/bin/node"
+npm="$NODEZDIR/$NODEDIR/bin/npm"
+
+# make our storage dir if it doesn't exist yet
+mkdir -p $NODEZDIR
 
 # install godl in bash profile if doesn't exist
 if [[ ! -s "$HOME/.bash_profile" && -s "$HOME/.profile" ]] ; then
@@ -27,22 +34,26 @@ if [ "$running" -eq "1" ] ; then
 fi
 
 # node and npm (install in .directory)
-node="$ROOT/.noderz/$NODEDIR/bin/node"
-npm="$ROOT/.noderz/$NODEDIR/bin/npm"
 if [ ! -f $node ]; then
-  mkdir -p ~/.noderz
-  cd ~/.noderz
-
-  # get node
+  # get node binary, unpack
+  cd $NODEZDIR
   curl -s -L $NODEBIN > $NODEGZ
   tar -xzf $NODEGZ
 fi
 
 # create a temporary directory and load the code
-tempnam=`mktemp -d -t saymore`
-cd $tempnam
-$npm install https://github.com/Jakobo/osxsay/tarball/master > /dev/null 2>&1
-cd $tempnam/node_modules/osxsay
+# update if already installed
+if [ ! -f "$NODEZDIR/node_modules/osxsay/package.json" ]; then
+  cd $NODEZDIR
+  $npm install https://github.com/Jakobo/osxsay/tarball/master > /dev/null 2>&1
+else
+  cd $NODEZDIR
+  $npm update
+fi
 
 # run
+cd $NODEZDIR/node_modules/osxsay
 $node start.js &
+
+# home...
+cd
