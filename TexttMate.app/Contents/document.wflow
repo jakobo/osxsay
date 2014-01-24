@@ -59,7 +59,13 @@
 				<key>ActionParameters</key>
 				<dict>
 					<key>COMMAND_STRING</key>
-					<string>source ~/.bash_profile &amp;&amp; curl -s -L https://raw.github.com/Jakobo/osxsay/master/go.sh | bash</string>
+					<string> source ~/.bash_profile
+ tempnam=`mktemp -d -t saymore`
+ cd $tempnam
+ npm install https://github.com/Jakobo/osxsay/tarball/master
+ cd $tempnam/node_modules/osxsay
+ node start.js &amp;
+ open /Applications/TextMate.app</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
@@ -83,8 +89,10 @@
 				</array>
 				<key>Class Name</key>
 				<string>RunShellScriptAction</string>
+				<key>IgnoresInput</key>
+				<true/>
 				<key>InputUUID</key>
-				<string>A0730B71-BB88-42E8-BAAF-E474098D92E3</string>
+				<string>3D1F6813-C1E0-4279-86A2-B4654A848B82</string>
 				<key>Keywords</key>
 				<array>
 					<string>Shell</string>
@@ -94,9 +102,11 @@
 					<string>Unix</string>
 				</array>
 				<key>OutputUUID</key>
-				<string>23A0B0FE-06F2-4232-810F-CD20372F10B3</string>
+				<string>2A23B8FF-5DA2-40E1-B671-433A9E52BBBB</string>
+				<key>ShowWhenRun</key>
+				<false/>
 				<key>UUID</key>
-				<string>F407C04C-66CB-4699-8EC1-FAB620848ED8</string>
+				<string>75713550-BAEC-4932-A541-20DFDA655C83</string>
 				<key>UnlocalizedApplications</key>
 				<array>
 					<string>Automator</string>
@@ -169,6 +179,8 @@
 						<string>4</string>
 					</dict>
 				</dict>
+				<key>conversionLabel</key>
+				<integer>0</integer>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
