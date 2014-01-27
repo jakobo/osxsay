@@ -97,7 +97,7 @@ module.exports = function(app, base) {
   }
   sayLoop();
 
-  app.get(base, function(req, res){
+  app.get(base, function(req, res) {
     var body = tl['/index'].fn({
       X: sanitizer.sanitize,
       header: require('../templates/shared/header'),

@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "osxsay",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "just screwing around with a simple osx say server",
   "author": "Jakob Heuser",
   "license": "mit",
@@ -9,6 +9,8 @@
     "express": "~3.4.8",
     "sanitizer": "~0.1.1",
     "forever-monitor": "~1.2.3",
-    "microtemplates": "~0.1.0"
+    "microtemplates": "~0.1.0",
+    "request": "~2.33.0",
+    "temporary": "0.0.8"
   }
 }

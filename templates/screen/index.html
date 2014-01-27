@@ -1,0 +1,21 @@
+<%= header %>
+
+<section class="row">
+  <h1>Wallpaper</h1>
+  <form action="<%= urls.paper %>" method="POST">
+    <input type="text" class="form-control" placeholder="url" name="fileurl"/>
+    <input type="submit" class="form-control" value="Set"/>
+  </form>
+</section>
+
+<section class="row">
+  <h1>Misc</h1>
+  <form action="<%= urls.sleep %>" method="POST">
+    <input type="submit" class="form-control" name="sleep" value="Sleep"/>
+  </form>
+  <form action="<%= urls.screensaver %>" method="POST">
+    <input type="submit" class="form-control" name="saver" value="Screen Saver"/>
+  </form>
+</section>
+
+<%= footer %>

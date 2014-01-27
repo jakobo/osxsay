@@ -12,10 +12,10 @@ app.use("/stylesheets", express.static(__dirname + '/stylesheets'));
 app.use("/images", express.static(__dirname + '/images'));
 
 require('./server_actions/say')(app, '/say');
+require('./server_actions/screen')(app, '/screen');
 
 // templates used in this file, read sync on startup
 var tl = {
-  '/update': fs.readFileSync('./templates/update.html').toString(),
   '/index': fs.readFileSync('./templates/index.html').toString()
 };
 
@@ -27,7 +27,10 @@ for (name in tl) {
 }
 
 app.get('/', function(req, res) {
-  var body = tl['/index'].fn();
+  var body = tl['/index'].fn({
+    header: require('./templates/shared/header'),
+    footer: require('./templates/shared/footer')
+  });
   res.setHeader('Content-Type', 'text/html');
   res.setHeader('Content-Length', Buffer.byteLength(body));
   res.end(body);
@@ -43,7 +46,7 @@ app.get('/update', function(req, res) {
   
   exec(command, function(error, stdout, stderr) {
     // just exit. forever (start.js) will restart us
-    var body = tl['/update'].fn();
+    var body = require('templates/shared/redirect');
     res.setHeader('Content-Type', 'text/html');
     res.setHeader('Content-Length', Buffer.byteLength(body));
     res.end(body);
