@@ -8,6 +8,7 @@
   "dependencies": {
     "express": "~3.4.8",
     "sanitizer": "~0.1.1",
-    "forever-monitor": "~1.2.3"
+    "forever-monitor": "~1.2.3",
+    "microtemplates": "~0.1.0"
   }
 }

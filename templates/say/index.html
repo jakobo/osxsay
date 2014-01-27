@@ -1,0 +1,83 @@
+<%= header %>
+
+<form method="POST" action="<%= urls.send %>" class="row form-horizontal">
+  <div class="col-md-3">
+    <select name="voice" class="form-control">
+      <option value="Alex">Ganzbot</option>
+      <option value="Agnes">Agnes</option>
+      <option value="Albert">Albert</option>
+      <option value="Bad News">Bad News</option>
+      <option value="Bahh">Bahh</option>
+      <option value="Bells">Bells</option>
+      <option value="Boing">Boing</option>
+      <option value="Bruce">Bruce</option>
+      <option value="Bubbles">Bubbles</option>
+      <option value="Cellos">Cellos</option>
+      <option value="Deranged">Deranged </option>
+      <option value="Fred">Fred</option>
+      <option value="Good News">Good News</option>
+      <option value="Hysterical">Hysterical </option>
+      <option value="Junior">Junior</option>
+      <option value="Kathy">Kathy</option>
+      <option value="Pipe Organ">Pipe Organ </option>
+      <option value="Princess">Princess</option>
+      <option value="Ralph">Ralph</option>
+      <option value="Trinoids">Trinoids </option>
+      <option value="Vicki">Vicki</option>
+      <option value="Victoria">Victoria </option>
+      <option value="Whisper">Whisper </option>
+      <option value="Zarvox">Zarvox</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <select name="volume" class="form-control">
+      <option value="100">100</option>
+      <option value="75">75</option>
+      <option value="50">50</option>
+      <option value="25">25</option>
+      <option value="0">0</option>
+    </select>
+  </div>
+  <div class="col-md-6">
+    <input type="text" id="message" name="message" placeholder="Say what?" class="form-control"/>
+  </div>
+  <div class="col-md-1">
+    <input type="submit" name="submit" value="Say" class="form-control btn-primary"/>
+  </div>
+</form>
+<section  class="row">
+  <h2>Gonna Say</h2>
+  <ol>
+    <% for (var i = 0, len = logs.pending.length; i < len; i++) { %>
+      <li><strong> <%= X(logs.pending[i].voice) %>:</strong> <%= X(logs.pending[i].message) %>
+    <% } %>
+    <% if (!logs.pending.length) { %>
+      <li>no items</li>
+    <% } %>
+  </ol>
+  <h2>Said</h2>
+  <ol>
+    <% for (var i = 0, len = logs.past.length; i < len; i++) { %>
+      <li><strong> <%= X(logs.past[i].voice) %>:</strong> <%= X(logs.past[i].message) %>
+    <% } %>
+    <% if (!logs.pending.length) { %>
+      <li>no items</li>
+    <% } %>
+  </ol>
+</section>
+<script>
+  var voice = '<%= X(lastVoice) %>' || 'Alex';
+  var volume = '<%= X(lastVolume) %>' || '50';
+  var els;
+  if (voice) {
+    els = document.getElementsByTagName('option');
+    for (var i = 0, len = els.length; i < len; i++) {
+      if (els[i].value == voice || els[i].value == volume) {
+        els[i].selected = 'SELECTED';
+      }
+    }
+  }
+  document.getElementById('message').focus();
+</script>
+
+<%= footer %>
