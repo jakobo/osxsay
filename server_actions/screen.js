@@ -82,11 +82,13 @@ module.exports = function(app, base) {
     var rem = request(req.body.fileurl);
     rem.on('data', function(chunk) {
       out.write(chunk);
-      res.write(chunk);
     });
     rem.on('end', function() {
       exec(makeSetWallpaperCommand(file.path), function(error, stdout, stderr) {
-        res.end();
+        var body = require('../templates/shared/redirect')(base);
+        res.setHeader('Content-Type', 'text/html');
+        res.setHeader('Content-Length', Buffer.byteLength(body));
+        res.end(body);
       });
     });
   });
