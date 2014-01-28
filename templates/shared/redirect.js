@@ -4,7 +4,7 @@ var microtemplates = require('microtemplates');
 var template = microtemplates(fs.readFileSync(path.resolve(__dirname, 'redirect.html')).toString());
 
 module.exports = function(returnUrl) {
-  template({
+  return template({
     header: require('./header'),
     footer: require('./footer'),
     urls: {

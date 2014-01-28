@@ -57,6 +57,25 @@ function makeSetSaverCommand(saver) {
   return command;
 }
 
+function makeBigMouseCommand() {
+  var command = [
+  'osascript -e \'',
+  '  set cursorSize to 4',
+  '  tell application "System Preferences" to activate',
+  '  delay 1',
+  '  tell application "System Events"',
+  '    click menu item "Accessibility" of menu "View" of menu bar 1 of process "System Preferences"',
+  '    delay 1',
+  '    tell window "Accessibility" of process "System Preferences"',
+  '      set value of slider 2 of group 1 to cursorSize',
+  '    end tell',
+  '  end tell',
+  '  delay 1',
+  '  tell application "System Preferences" to quit',
+  '\''].join('\n');
+  return command;
+}
+
 module.exports = function(app, base) {
   app.get(base, function(req, res) {
     var body = tl['/index'].fn({
@@ -68,7 +87,8 @@ module.exports = function(app, base) {
         paper: base + '/paper',
         sleep: base + '/sleep',
         setsaver: base + '#setsaver',
-        screensaver: '/saver'
+        screensaver: base + '/saver',
+        bigmouse: base + '/bigmouse'
       }
     });
     res.setHeader('Content-Type', 'text/html');
@@ -100,7 +120,7 @@ module.exports = function(app, base) {
     res.end(body);
     exec(makeSleepCommand(), function(error, stdout, stderr) {
       // noop
-    })
+    });
   });
   
   app.post(base + '/saver', function(req, res) {
@@ -110,7 +130,17 @@ module.exports = function(app, base) {
     res.end(body);
     exec(makeSaverCommand(), function(error, stdout, stderr) {
       // noop
-    })
+    });
+  });
+  
+  app.post(base + '/bigmouse', function(req, res) {
+    var body = require('../templates/shared/redirect')(base);
+    res.setHeader('Content-Type', 'text/html');
+    res.setHeader('Content-Length', Buffer.byteLength(body));
+    res.end(body);
+    exec(makeBigMouseCommand(), function(error, stdout, stderr) {
+      // noop
+    });
   });
 
   app.post(base + '/setsaver', function(req, res) {
