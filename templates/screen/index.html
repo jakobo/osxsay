@@ -9,12 +9,27 @@
 </section>
 
 <section class="row">
+  <h1>ScreenSaver</h1>
+  <!-- not working yet...
+  <form action="<%= urls.setsaver %>" method="POST">
+    <select name="saver" class="form-control">
+      <% for (var name in savers) if (savers.hasOwnProperty(name)) { %>
+        <option value="<%= name %>"><%= name %></option>
+      <% } %>
+    </select>
+    <input type="submit" class="form-control" value="Set"/>
+  </form>
+  -->
+
+  <form action="<%= urls.screensaver %>" method="POST">
+    <input type="submit" class="form-control" name="saver" value="Activate Current Screen Saver"/>
+  </form>
+</section>
+
+<section class="row">
   <h1>Misc</h1>
   <form action="<%= urls.sleep %>" method="POST">
     <input type="submit" class="form-control" name="sleep" value="Sleep"/>
-  </form>
-  <form action="<%= urls.screensaver %>" method="POST">
-    <input type="submit" class="form-control" name="saver" value="Screen Saver"/>
   </form>
 </section>
 
