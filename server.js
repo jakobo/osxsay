@@ -50,7 +50,7 @@ app.get('/update', function(req, res) {
     res.setHeader('Content-Type', 'text/html');
     res.setHeader('Content-Length', Buffer.byteLength(body));
     res.end(body);
-    process.exit(0);
+    setTimeout(process.exit(0), 1000);
   });
 });
 
