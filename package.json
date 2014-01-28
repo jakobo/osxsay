@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "osxsay",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "just screwing around with a simple osx say server",
   "author": "Jakob Heuser",
   "license": "mit",
