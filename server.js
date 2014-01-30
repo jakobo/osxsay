@@ -44,13 +44,14 @@ app.get('/update', function(req, res) {
   var thisNode = process.execPath;
   var thisNpm = path.resolve(path.dirname(thisNode), 'npm');
   var command = 'cd ' + basedir + ' && ' + thisNpm + ' install https://github.com/Jakobo/osxsay/tarball/master';
+
+  var body = require('./templates/shared/redirect')('/');
+  res.setHeader('Content-Type', 'text/html');
+  res.setHeader('Content-Length', Buffer.byteLength(body));
+  res.end(body);
   
   exec(command, function(error, stdout, stderr) {
     // just exit. forever (start.js) will restart us
-    var body = require('./templates/shared/redirect')('/');
-    res.setHeader('Content-Type', 'text/html');
-    res.setHeader('Content-Length', Buffer.byteLength(body));
-    res.end(body);
     process.exit(0);
   });
 });

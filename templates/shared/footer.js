@@ -7,6 +7,7 @@ var pjson = require('../../package.json');
 module.exports = template({
   version: pjson.version,
   urls: {
-    update: '/update'
+    update: '/update',
+    kill: '/kill'
   }
 });
