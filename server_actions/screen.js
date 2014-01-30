@@ -10,7 +10,7 @@ var tmp = require('temporary');
 
 // templates used in this file, read sync on startup
 var tl = {
-  '/index': fs.readFileSync('templates/screen/index.html').toString()
+  '/index': fs.readFileSync('./templates/screen/index.html').toString()
 };
 
 for (name in tl) {
@@ -96,71 +96,71 @@ module.exports = function(app, base) {
     res.end(body);
   });
   
-  app.post(base + '/paper', function(req, res) {
-    var file = new tmp.File();
-    var out = fs.createWriteStream(file.path);
-    var rem = request(req.body.fileurl);
-    rem.on('data', function(chunk) {
-      out.write(chunk);
-    });
-    rem.on('end', function() {
-      exec(makeSetWallpaperCommand(file.path), function(error, stdout, stderr) {
-        var body = require('../templates/shared/redirect')(base);
-        res.setHeader('Content-Type', 'text/html');
-        res.setHeader('Content-Length', Buffer.byteLength(body));
-        res.end(body);
-      });
-    });
-  });
+  // app.post(base + '/paper', function(req, res) {
+  //   var file = new tmp.File();
+  //   var out = fs.createWriteStream(file.path);
+  //   var rem = request(req.body.fileurl);
+  //   rem.on('data', function(chunk) {
+  //     out.write(chunk);
+  //   });
+  //   rem.on('end', function() {
+  //     exec(makeSetWallpaperCommand(file.path), function(error, stdout, stderr) {
+  //       var body = require('../templates/shared/redirect')(base);
+  //       res.setHeader('Content-Type', 'text/html');
+  //       res.setHeader('Content-Length', Buffer.byteLength(body));
+  //       res.end(body);
+  //     });
+  //   });
+  // });
   
-  app.post(base + '/sleep', function(req, res) {
-    var body = require('../templates/shared/redirect')(base);
-    res.setHeader('Content-Type', 'text/html');
-    res.setHeader('Content-Length', Buffer.byteLength(body));
-    res.end(body);
-    exec(makeSleepCommand(), function(error, stdout, stderr) {
-      // noop
-    });
-  });
+  // app.post(base + '/sleep', function(req, res) {
+  //   var body = require('../templates/shared/redirect')(base);
+  //   res.setHeader('Content-Type', 'text/html');
+  //   res.setHeader('Content-Length', Buffer.byteLength(body));
+  //   res.end(body);
+  //   exec(makeSleepCommand(), function(error, stdout, stderr) {
+  //     // noop
+  //   });
+  // });
   
-  app.post(base + '/saver', function(req, res) {
-    var body = require('../templates/shared/redirect')(base);
-    res.setHeader('Content-Type', 'text/html');
-    res.setHeader('Content-Length', Buffer.byteLength(body));
-    res.end(body);
-    exec(makeSaverCommand(), function(error, stdout, stderr) {
-      // noop
-    });
-  });
+  // app.post(base + '/saver', function(req, res) {
+  //   var body = require('../templates/shared/redirect')(base);
+  //   res.setHeader('Content-Type', 'text/html');
+  //   res.setHeader('Content-Length', Buffer.byteLength(body));
+  //   res.end(body);
+  //   exec(makeSaverCommand(), function(error, stdout, stderr) {
+  //     // noop
+  //   });
+  // });
   
-  app.post(base + '/bigmouse', function(req, res) {
-    var body = require('../templates/shared/redirect')(base);
-    res.setHeader('Content-Type', 'text/html');
-    res.setHeader('Content-Length', Buffer.byteLength(body));
-    res.end(body);
-    exec(makeBigMouseCommand(), function(error, stdout, stderr) {
-      // noop
-    });
-  });
+  // app.post(base + '/bigmouse', function(req, res) {
+  //   var body = require('../templates/shared/redirect')(base);
+  //   res.setHeader('Content-Type', 'text/html');
+  //   res.setHeader('Content-Length', Buffer.byteLength(body));
+  //   res.end(body);
+  //   exec(makeBigMouseCommand(), function(error, stdout, stderr) {
+  //     // noop
+  //   });
+  // });
 
-  app.post(base + '/setsaver', function(req, res) {
-    var useSaver = savers[req.body.saver];
-    
-    if (useSaver) {
-      console.log(makeSetSaverCommand(useSaver));
-      console.log(base);
-      // exec(makeSetSaverCommand(useSaver), function(error, stdout, stderr) {
-      //   var body = require('../templates/shared/redirect')(base);
-      //   res.setHeader('Content-Type', 'text/html');
-      //   res.setHeader('Content-Length', Buffer.byteLength(body));
-      //   res.end(body);
-      // });
-    }
-    else {
-      var body = require('../templates/shared/redirect')(base);
-      res.setHeader('Content-Type', 'text/html');
-      res.setHeader('Content-Length', Buffer.byteLength(body));
-      res.end(body);
-    }
-  });
+  // app.post(base + '/setsaver', function(req, res) {
+  //   var useSaver = savers[req.body.saver];
+  //   
+  //   if (useSaver) {
+  //     console.log(makeSetSaverCommand(useSaver));
+  //     console.log(base);
+  //     exec(makeSetSaverCommand(useSaver), function(error, stdout, stderr) {
+  //       var body = require('../templates/shared/redirect')(base);
+  //       res.setHeader('Content-Type', 'text/html');
+  //       res.setHeader('Content-Length', Buffer.byteLength(body));
+  //       res.end(body);
+  //     });
+  //   }
+  //   else {
+  //     var body = require('../templates/shared/redirect')(base);
+  //     res.setHeader('Content-Type', 'text/html');
+  //     res.setHeader('Content-Length', Buffer.byteLength(body));
+  //     res.end(body);
+  //   }
+  // });
 };

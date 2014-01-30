@@ -13,6 +13,7 @@ app.use("/images", express.static(__dirname + '/images'));
 
 require('./server_actions/say')(app, '/say');
 require('./server_actions/screen')(app, '/screen');
+require('./server_actions/kill')(app, '/kill');
 
 // templates used in this file, read sync on startup
 var tl = {

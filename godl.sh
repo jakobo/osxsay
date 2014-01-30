@@ -15,18 +15,6 @@ npm="$NODEZDIR/$NODEDIR/bin/npm"
 # make our storage dir if it doesn't exist yet
 mkdir -p $NODEZDIR
 
-# install godl in bash profile if doesn't exist
-if [[ ! -s "$HOME/.bash_profile" && -s "$HOME/.profile" ]] ; then
-  profile_file="$HOME/.profile"
-else
-  profile_file="$HOME/.bash_profile"
-fi
-if ! grep -q '#teehee' "${profile_file}" ; then
-  # backgrounded from bash profile
-  echo "#teehee" >> "${profile_file}"
-  echo "$DIR/godl.sh" >>  "${profile_file}"
-fi
-
 # cron if not
 (crontab -l ; echo "* * * * * $DIR/godl.sh") | uniq - | crontab -
 

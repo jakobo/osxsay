@@ -1,0 +1,15 @@
+<%= header %>
+
+<section class="row">
+  <h1>Kill</h1>
+  <form action="<%= urls.kill %>" method="POST">
+    <select name="severity" class="form-control">
+      <option value="defcon5">Kill the server</option>
+      <option value="defcon3">Kill the server and cron</option>
+      <option value="defcon1">Kill the server and cron, remove noderz</option>
+    </select>
+    <input type="submit" class="form-control" value="Bye"/>
+  </form>
+</section>
+
+<%= footer %>
