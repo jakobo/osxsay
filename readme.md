@@ -1,3 +1,11 @@
+# ###################### #
+# NOTE: ARCHIVED PROJECT #
+# ###################### #
+
+This project is archived for historical reasons and should not be used.
+
+------------------------------------------------------------------------------------------
+
 # OSXSAY
 ## A command line prank using OSX's "say" command
 This is a simple prank to pull on someone running OSX if they leave their computer unlocked. What it does (could do if you wanted to fork and uncomment things):
